@@ -9,6 +9,9 @@
 #		"Quantify the MPG difference between automatic and manual transmissions"
 #
 
+
+
+
 options( warn = -1)
 library( ggplot2)
 options( warn = 0)
@@ -42,34 +45,30 @@ Data$config = factor( Data$config)
 
 Data$carb = factor( Data$carb)
 
-FULL.model = lm( mpg ~ ., Data)
 
-summary( FULL.model)
+# Exploratory analysis
 
-MIN.model.trans = lm( mpg ~ trans, Data)
-summary( MIN.model.trans)
+plot.hp.disp = ggplot( Data, aes( x = disp, y = hp, colour = trans, label = rownames( Data)))
 
-MIN.model.disp = lm( mpg ~ disp, Data)
-summary( MIN.model.disp)
-
-MIN.model.hp = lm( mpg ~ hp, Data)
-summary( MIN.model.hp)
-
-MIN.model.wt = lm( mpg ~ wt, Data)
-summary( MIN.model.wt)
+plot.hp.disp = plot.hp.disp + geom_point( size = 1)
 
 
+plot.hp.cyl = ggplot( Data, aes( x = cyl, y = hp, colour = trans, label = rownames( Data)))
+
+plot.hp.cyl = plot.hp.cyl + geom_point( size = 1)
 
 
+plot.hp.wt = ggplot( Data, aes( x = wt, y = hp, colour = trans, label = rownames( Data)))
+
+plot.hp.wt = plot.hp.wt + geom_point( size = 1)
 
 
+plot.disp.cyl = ggplot( Data, aes( x = cyl, y = disp, colour = trans, label = rownames( Data)))
+
+plot.disp.cyl = plot.disp.cyl + geom_point( size = 1)
 
 
-# boxplot( c( list( Data$mpg), split( Data$mpg, list( Data$trans, Data$cyl))))
-
-model2 = lm( mpg ~ trans + cyl + disp + gear, Data)
-
-model3 = lm( mpg ~ trans + cyl + disp, Data)
+grid.arrange( plot.hp.disp, plot.hp.cyl, plot.hp.wt, plot.disp.cyl, nrow = 2, ncol = 2, top = "Figure 1: HP vs. Disp, Cyl, and Wt; Disp vs. Cyl.")
 
 
 
@@ -97,244 +96,232 @@ plot.cyl = ggplot( Data, aes( x = cyl, y = mpg, colour = trans, label = rownames
 
 plot.cyl = plot.cyl + geom_point( size = 1)
 
-
-dev.new()
-
 grid.arrange( plot.wt, plot.hp, plot.disp, plot.cyl, nrow = 2, ncol = 2, top = "Figure 2: MPG vs. Wt, HP, Disp, and Cyl")
 
 
 
+FULL.model = lm( mpg ~ ., Data)
+
+summary( FULL.model)
+
+MIN.model.trans = lm( mpg ~ trans, Data)
+summary( MIN.model.trans)
+
+MIN.model.disp = lm( mpg ~ disp, Data)
+summary( MIN.model.disp)
+
+MIN.model.hp = lm( mpg ~ hp, Data)
+summary( MIN.model.hp)
+
+MIN.model.wt = lm( mpg ~ wt, Data)
+summary( MIN.model.wt)
 
 
-plot.hp.disp = ggplot( Data, aes( x = disp, y = hp, colour = trans, label = rownames( Data)))
-
-plot.hp.disp = plot.hp.disp + geom_point( size = 1)
 
 
-plot.hp.cyl = ggplot( Data, aes( x = cyl, y = hp, colour = trans, label = rownames( Data)))
-
-plot.hp.cyl = plot.hp.cyl + geom_point( size = 1)
 
 
-plot.hp.wt = ggplot( Data, aes( x = wt, y = hp, colour = trans, label = rownames( Data)))
+# create all possible multiple variable subset models of
+#	mpg ~ trans + cyl + disp + hp + wt
 
-plot.hp.wt = plot.hp.wt + geom_point( size = 1)
+m1 = lm( mpg ~ trans + cyl + disp + hp + wt, Data)
+m2 = lm( mpg ~ trans + cyl + disp + hp, Data)
+m3 = lm( mpg ~ trans + cyl + disp + wt, Data)
+m4 = lm( mpg ~ trans + cyl + hp + wt, Data)
+m9 = lm( mpg ~ trans + disp + hp + wt, Data)
+m16 = lm( mpg ~ cyl + disp + hp + wt, Data)
+m5 = lm( mpg ~ trans + cyl + disp, Data)
+m6 = lm( mpg ~ trans + cyl + hp, Data)
+m7 = lm( mpg ~ trans + cyl + wt, Data)
+m10 = lm( mpg ~ trans + disp + hp, Data)
+m11 = lm( mpg ~ trans + disp + wt, Data)
+m13 = lm( mpg ~ trans + hp + wt, Data)
+m17 = lm( mpg ~ cyl + disp + hp, Data)
+m18 = lm( mpg ~ cyl + disp + wt, Data)
+m19 = lm( mpg ~ cyl + hp + wt, Data)
+m23 = lm( mpg ~ disp + hp + wt, Data)
+m8 = lm( mpg ~ trans + cyl, Data)
+m12 = lm( mpg ~ trans + disp, Data)
+m14 = lm( mpg ~ trans + hp, Data)
+m15 = lm( mpg ~ trans + wt, Data)
+m20 = lm( mpg ~ cyl + disp, Data)
+m21 = lm( mpg ~ cyl + hp, Data)
+m22 = lm( mpg ~ cyl + wt, Data)
+m24 = lm( mpg ~ disp + hp, Data)
+m25 = lm( mpg ~ disp + wt, Data)
+m26 = lm( mpg ~ hp + wt, Data)
 
 
-plot.disp.cyl = ggplot( Data, aes( x = cyl, y = disp, colour = trans, label = rownames( Data)))
 
-plot.disp.cyl = plot.disp.cyl + geom_point( size = 1)
+# save model summaries
 
+s1 = summary( m1)
+s2 = summary( m2)
+s3 = summary( m3)
+s4 = summary( m4)
+s5 = summary( m5)
+s6 = summary( m6)
+s7 = summary( m7)
+s8 = summary( m8)
+s9 = summary( m9)
+s10 = summary( m10)
+s11 = summary( m11)
+s12 = summary( m12)
+s13 = summary( m13)
+s14 = summary( m14)
+s15 = summary( m15)
+s16 = summary( m16)
+s17 = summary( m17)
+s18 = summary( m18)
+s19 = summary( m19)
+s20 = summary( m20)
+s21 = summary( m21)
+s22 = summary( m22)
+s23 = summary( m23)
+s24 = summary( m24)
+s25 = summary( m25)
+s26 = summary( m26)
+
+
+
+# Obtain Adjusted R squared and PRESS values for each model
+# Comments indicate number of predictors in each model
+
+s1$adj.r.squared    	# 5
+(pr1 = sum( (resid( m1) / (1 - hatvalues( m1))) ^ 2))
+
+s2$adj.r.squared		# 4
+(pr2 = sum( (resid( m2) / (1 - hatvalues( m2))) ^ 2))
+
+s3$adj.r.squared		# 4
+(pr3 = sum( (resid( m3) / (1 - hatvalues( m3))) ^ 2))
+
+s4$adj.r.squared		# 4
+(pr4 = sum( (resid( m4) / (1 - hatvalues( m4))) ^ 2))
+
+s9$adj.r.squared		# 4
+(pr9 = sum( (resid( m9) / (1 - hatvalues( m9))) ^ 2))
+
+s16$adj.r.squared		# 4
+(pr16 = sum( (resid( m16) / (1 - hatvalues( m16))) ^ 2))
+
+s5$adj.r.squared		# 3
+(pr5 = sum( (resid( m5) / (1 - hatvalues( m5))) ^ 2))
+
+s6$adj.r.squared		# 3
+(pr6 = sum( (resid( m6) / (1 - hatvalues( m6))) ^ 2))
+
+s7$adj.r.squared		# 3
+(pr7 = sum( (resid( m7) / (1 - hatvalues( m7))) ^ 2))
+
+s10$adj.r.squared		# 3
+(pr10 = sum( (resid( m10) / (1 - hatvalues( m10))) ^ 2))
+
+s11$adj.r.squared		# 3
+(pr11 = sum( (resid( m11) / (1 - hatvalues( m11))) ^ 2))
+
+s13$adj.r.squared		# 3
+(pr13 = sum( (resid( m13) / (1 - hatvalues( m13))) ^ 2))
+
+s17$adj.r.squared		# 3
+(pr17 = sum( (resid( m17) / (1 - hatvalues( m17))) ^ 2))
+
+s18$adj.r.squared		# 3
+(pr18 = sum( (resid( m18) / (1 - hatvalues( m18))) ^ 2))
+
+s19$adj.r.squared		# 3
+(pr19 = sum( (resid( m19) / (1 - hatvalues( m19))) ^ 2))
+
+s23$adj.r.squared		# 3
+(pr23 = sum( (resid( m23) / (1 - hatvalues( m23))) ^ 2))
+
+s12$adj.r.squared		# 2
+(pr12 = sum( (resid( m12) / (1 - hatvalues( m12))) ^ 2))
+
+s14$adj.r.squared		# 2
+(pr14 = sum( (resid( m14) / (1 - hatvalues( m14))) ^ 2))
+
+s15$adj.r.squared		# 2
+(pr15 = sum( (resid( m15) / (1 - hatvalues( m15))) ^ 2))
+
+s20$adj.r.squared		# 2
+(pr20 = sum( (resid( m20) / (1 - hatvalues( m20))) ^ 2))
+
+s21$adj.r.squared		# 2
+(pr21 = sum( (resid( m21) / (1 - hatvalues( m21))) ^ 2))
+
+s22$adj.r.squared		# 2
+(pr22 = sum( (resid( m22) / (1 - hatvalues( m22))) ^ 2))
+
+s24$adj.r.squared		# 2
+(pr24 = sum( (resid( m24) / (1 - hatvalues( m24))) ^ 2))
+
+s25$adj.r.squared		# 2
+(pr25 = sum( (resid( m25) / (1 - hatvalues( m25))) ^ 2))
+
+s26$adj.r.squared		# 2
+(pr26 = sum( (resid( m26) / (1 - hatvalues( m26))) ^ 2))
+
+
+
+
+
+s1
+
+s4
+
+s16
+
+s19
+
+s22
+
+
+
+
+# Perform nested likelihood ratio tests
+
+anova( m22, m19, m4, m1)
+anova( m22, m19, m16, m1)
+
+
+
+# Build data fram to be used in table in report
+
+adj.R.sq = c( s1$adj.r.squared, s4$adj.r.squared, s16$adj.r.squared, s19$adj.r.squared, s22$adj.r.squared)
+
+PRESS = c( pr1, pr4, pr16, pr19, pr22)
+
+model = c( "mpg = trans + cyl + disp + hp + wt", "mpg = trans + cyl + hp + wt", "mpg = cyl + disp + hp + wt", "mpg = cyl + hp + wt + ε", "mpg = cyl + wt")
+
+model.table = data.frame( model, adj.R.sq, PRESS)
+
+rownames( model.table) = c( "Model 1", "Model 2", "Model 3", "Model 4", "Model 5")
+
+colnames( model.table) = c( "Model", "Adjusted R²", "PRESS")
+
+
+
+
+# Visually check candidate models
 
 dev.new()
-
-grid.arrange( plot.hp.disp, plot.hp.cyl, plot.hp.wt, plot.disp.cyl, nrow = 2, ncol = 2, top = "Figure 1: HP vs. Disp, Cyl, and Wt; Disp vs. Cyl.")
-
-
-
-
-
-
-
-
-
-
-g = ggplot( Data, aes( x = hp / wt, y = mpg, colour = trans))
-
-g = g + geom_point( size = 3, colour = "black") + geom_point( size = 2)
-
-g
-
-
-
-model4 = lm( mpg ~ trans + I( sqrt( hp / wt)), Data)
-
-model5 = lm( mpg ~ trans + I( hp / wt), Data)
-
-DATA = Data[ -28,]
-model5b = lm( mpg ~ trans + I( hp / wt), DATA)
-
-model4b = lm( mpg ~ trans + I( sqrt( hp / wt)), DATA)
-
-model6 = lm( mpg ~ trans + I( hp / wt) + drat, Data)
-
-
-
-g.model = lm( wt ~ disp, Data)
-slope = coef( g.model)[ 2]
-intercept = coef( g.model)[ 1]
-
-g = ggplot( Data, aes( x = disp, y = wt, colour = trans, label = rownames( Data)))
-
-g = g + geom_point( size = 1, colour = "black") + geom_text(size=3)
-
-g = g + geom_abline( slope = slope, intercept = intercept)
-
-g
-
-
-
-g.model = lm( wt ~ hp, Data)
-slope = coef( g.model)[ 2]
-intercept = coef( g.model)[ 1]
-
-g.model.a = lm( wt ~ hp, Data[ Data$trans == "auto",])
-g.model.m = lm( wt ~ hp, Data[ Data$trans == "man",])
-intercept.a = coef( g.model.a)[ 1]
-intercept.m = coef( g.model.m)[ 1]
-slope.a = coef( g.model.a)[ 2]
-slope.m = coef( g.model.m)[ 2]
-
-g = ggplot( Data, aes( x = hp, y = wt, colour = trans, label = rownames( Data)))
-
-g = g + geom_point( size = 1, colour = "black") + geom_text(size=3)
-
-g = g + geom_abline( slope = slope, intercept = intercept)
-
-g = g + geom_abline( slope = slope.a, intercept = intercept.a)
-
-g = g + geom_abline( slope = slope.m, intercept = intercept.m)
-
-g
-
-
-g.model = lm( mpg ~ wt, Data)
-slope = coef( g.model)[ 2]
-intercept = coef( g.model)[ 1]
-g.model.a = lm( mpg ~ wt, Data[ Data$trans == "auto",])
-g.model.m = lm( mpg ~ wt, Data[ Data$trans == "man",])
-intercept.a = coef( g.model.a)[ 1]
-intercept.m = coef( g.model.m)[ 1]
-slope.a = coef( g.model.a)[ 2]
-slope.m = coef( g.model.m)[ 2]
-
-g = ggplot( Data, aes( x = wt, y = mpg, colour = trans, label = rownames( Data)))
-
-g = g + geom_point( size = 2, colour = "black") + geom_point( size = 1)
-
-g = g + geom_abline( slope = slope, intercept = intercept)
-
-g = g + geom_abline( slope = slope.a, intercept = intercept.a)
-
-g = g + geom_abline( slope = slope.m, intercept = intercept.m)
-
-g
-
-
-g.model = lm( mpg ~ I( hp / wt), Data)
-g.model.a = lm( mpg ~ I( hp / wt), Data[ Data$trans == "auto",])
-g.model.m = lm( mpg ~ I( hp / wt), Data[ Data$trans == "man",])
-slope = coef( g.model)[ 2]
-slope.a = coef( g.model.a)[ 2]
-slope.m = coef( g.model.m)[ 2]
-intercept = coef( g.model)[ 1]
-intercept.a = coef( g.model.a)[ 1]
-intercept.m = coef( g.model.m)[ 1]
-
-g = ggplot( Data, aes( x = I( hp / wt), y = mpg, colour = trans, label = rownames( Data)))
-
-g = g + geom_point( size = 2, colour = "black") + geom_point( size = 1) + geom_text(size=3)
-
-g = g + geom_abline( slope = slope, intercept = intercept)
-
-g = g + geom_abline( slope = slope.a, intercept = intercept.a)
-
-g = g + geom_abline( slope = slope.m, intercept = intercept.m)
-
-g
-
-g.model = lm( mpg ~ I( hp / wt), DATA)
-g.model.a = lm( mpg ~ I( hp / wt), DATA[ Data$trans == "auto",])
-g.model.m = lm( mpg ~ I( hp / wt), DATA[ Data$trans == "man",])
-slope = coef( g.model)[ 2]
-slope.a = coef( g.model.a)[ 2]
-slope.m = coef( g.model.m)[ 2]
-intercept = coef( g.model)[ 1]
-intercept.a = coef( g.model.a)[ 1]
-intercept.m = coef( g.model.m)[ 1]
-
-g = ggplot( DATA, aes( x = I( hp / wt), y = mpg, colour = trans, label = rownames( DATA)))
-
-g = g + geom_point( size = 1, colour = "black") + geom_text(size=3)
-
-g = g + geom_abline( slope = slope, intercept = intercept)
-
-g = g + geom_abline( slope = slope.a, intercept = intercept.a)
-
-g = g + geom_abline( slope = slope.m, intercept = intercept.m)
-
-g
-
-
-
-dataset = Data[Data$hp <= 230,]
-submodel = lm( mpg ~ wt + hp + trans, dataset)
-model2 = lm( mpg ~ trans + cyl, dataset)
-model3 = lm( mpg ~ trans + cyl + wt + hp + hp:wt, dataset)
-model4 = lm( mpg ~ wt + hp + trans + cyl, dataset)
-model5 = lm( mpg ~ trans + wt + hp + hp:wt, dataset)
-model6 = lm( mpg ~ trans + hp:wt, dataset)
-model7 = lm( mpg ~ trans + cyl + hp:wt, dataset)
-model8 = lm( mpg ~ cyl + hp:wt, dataset)
-model11 = lm( mpg ~ trans + hp + + drat + wt, dataset)
-
-
 par( mfrow = c( 2, 2))
+plot( m1, main = "Model 1")
 
-Model1 = lm( mpg ~ trans + cyl + wt, Data)
+dev.new()
 par( mfrow = c( 2, 2))
-plot( Model1, main = "mpg ~ trans + cyl + wt Adj R2 = 0.81")
-sumMod1 = summary( Model1)
+plot( m4, main = "Model 2")
 
-model9 = lm( mpg ~ trans + cyl + hp, Data)
+dev.new()
 par( mfrow = c( 2, 2))
-plot( model9, main = "mpg ~ trans + cyl + hp  Adj R2 = 0.80")
-summod9 = summary( model9)
+plot( m16, main = "Model 3")
 
-model.trans.cyl.hp.wt = lm( mpg ~ trans + cyl + hp + wt, Data)
+dev.new()
 par( mfrow = c( 2, 2))
-sumMod2 = summary( model.trans.cyl.hp.wt)
-plot( model.trans.cyl.hp.wt, main = "mpg ~ trans + cyl + hp + wt  Adj R2 = 0.84")
+plot( m19, main = "Model 4")
 
-Model10 = lm( mpg ~ trans + disp + hp + wt, Data)
+dev.new()
 par( mfrow = c( 2, 2))
-plot( Model10, main = "mpg ~ trans + disp + hp + wt  Adj R2 = 0.82")
-sumMod10 = summary( Model10)
-
-Model11 = lm( mpg ~ trans + cyl + disp + hp + wt, Data)
-par( mfrow = c( 2, 2))
-plot( Model11, main = "mpg ~ trans + cyly + disp + hp + wt  Adj R2 = 0.83")
-sumMod11 = summary( Model11)
-
-model.sm = lm( mpg ~ trans + hp + I( hp / wt), data.sm[ -(16:17),])
-par( mfrow = c( 2, 2))
-plot( model.sm)
-summary.sm = summary( model.sm)
-
-
-
-#Model1 = lm( mpg ~ trans + cyl + 
-
-full.model = lm( mpg ~ trans + cyl + disp + hp + drat + wt + gear + carb + I( hp / wt), Data)
-
-full.model2 = lm( mpg ~ trans + cyl + disp + hp + drat + wt + gear + carb + I( hp / wt), dataset)
-
-
-mat.data = Data[ , c( 1,2,3,4,5,6,9,10,11)]
-
-out = regsubsets( mpg ~ trans + cyl + disp + hp + drat + wt + gear + carb + I( hp / wt), data = Data, force.in =  c( 1), nvmax = 15)
-
-
-model.cyl.hp.wt = lm( mpg ~ cyl + hp + wt, Data)
-model.disp.hp.wt = lm( mpg ~ disp + hp + wt, Data)
-model.cyl.disp.hp.wt = lm( mpg ~ cyl + disp + hp + wt, Data)
-model.wt.cyl = lm( mpg ~ wt + cyl, Data)
-model.wt.cyl.drat = lm( mpg ~ wt + cyl + drat, Data)
-
-summary( model.cyl.hp.wt)
-summary( model.disp.hp.wt)
-summary( model.cyl.disp.hp.wt)
-summary( model.wt.cyl)
-
-anova( model.trans.cyl.hp.wt, model.cyl.hp.wt, model.wt.cyl)
+plot( m22, main = "Model 5")
 
